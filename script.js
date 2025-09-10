@@ -1,18 +1,18 @@
-let numbers = {
+const containerButtons = document.querySelector('.container-buttons');
+const output = document.querySelector('.output');
+
+const numbers = {
     numberOne: 0,
     numberTwo: 0,
-    numberResult: 0,
 }
-
-const containerButtons = document.querySelector('.container-buttons');
-
-createButtons();
 
 function add(numberOne, numberTwo) {
     return numberOne + numberTwo;
 }
 
 function divide(numberOne, numberTwo) {
+    console.log(numberOne);
+    console.log(numberTwo);
     return numberOne / numberTwo;
 }
 
@@ -30,58 +30,44 @@ function operate(numberOne, operator, numberTwo) {
             return add(numberOne, numberTwo);
         case '-':
             return subtract(numberOne, numberTwo);
-        case '*':
+        case '×':
             return multiply(numberOne, numberTwo);
-        case '/':
+        case '÷':
             return divide(numberOne, numberTwo);
+        case '=':
+            return numberOne;
     }
 }
 
-function storeFirstNumber(number) {
-    numbers.numberOne = Number(number);
-}
+let buttons = document.querySelectorAll('button');
+let numbersArray = [];
+let operationsArray = [];
+let number = '';
+let operator = '';
+let outputText = '';
+let resultOperation = 0;
 
-function storeSecondNumber(number) {
-    numbers.numberTwo = Number(number);
-}
+buttons = [...buttons];
 
-function storeResultNumber(number) {
-    numbers.numberResult = Number(number);
-}
-
-function userInput() {
-    let input = prompt('Operation: ');
-    let inputArr = input.split(' ');
-    let operator = inputArr[1];
-    storeFirstNumber(inputArr[0]);
-    storeSecondNumber(inputArr[2]);
-    storeResultNumber(operate(numbers.numberOne, operator, numbers.numberTwo));
-    display(`Operation is: ${numbers.numberOne} ${operator} ${numbers.numberTwo} = ${numbers.numberResult}`);
-}
-
-function display(output) {
-    console.log(output);
-}
-
-function createButtons() {
-    let operations = ['%', '÷', '×', '-', '+', '=', '<', ','];
-    let optionFunctions = ['AC', '()'];
-
-    for (let i = 0; i < 10; i++) {
-        const buttonNumber = document.createElement('button');
-        buttonNumber.textContent = i;
-        containerButtons.appendChild(buttonNumber);    
-    }
-
-    for (const element of operations) {
-        const buttonOperator = document.createElement('button');
-        buttonOperator.textContent = element;
-        containerButtons.appendChild(buttonOperator);    
-    }
-
-    for (const element of optionFunctions) {
-        const buttonOptional = document.createElement('button');
-        buttonOptional.textContent = element;
-        containerButtons.appendChild(buttonOptional);
-    }
-}
+buttons.forEach(button => {
+    button.addEventListener('click', event => {
+        if(Number(event.target.textContent))
+            number += event.target.textContent;
+        else if(!Number(event.target.textContent)) {
+            numbersArray.push(Number(number));
+            operator = event.target.textContent;
+            operationsArray.push(operator);
+            number = '';           
+        }
+        if(numbersArray.length === 2) {
+            numbersArray[0] = operate(numbersArray[0], operationsArray[0], numbersArray[1]);
+            operationsArray.shift();
+            resultOperation = numbersArray[0];
+            outputText = resultOperation;
+            numbersArray.pop();
+        }
+        if(event.target.textContent !== '=')
+            outputText += event.target.textContent;
+        output.textContent = outputText;
+    });
+});
