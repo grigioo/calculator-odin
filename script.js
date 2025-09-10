@@ -4,6 +4,10 @@ let numbers = {
     numberResult: 0,
 }
 
+const containerButtons = document.querySelector('.container-buttons');
+
+createButtons();
+
 function add(numberOne, numberTwo) {
     return numberOne + numberTwo;
 }
@@ -57,4 +61,27 @@ function userInput() {
 
 function display(output) {
     console.log(output);
+}
+
+function createButtons() {
+    let operations = ['%', '÷', '×', '-', '+', '=', '<', ','];
+    let optionFunctions = ['AC', '()'];
+
+    for (let i = 0; i < 10; i++) {
+        const buttonNumber = document.createElement('button');
+        buttonNumber.textContent = i;
+        containerButtons.appendChild(buttonNumber);    
+    }
+
+    for (const element of operations) {
+        const buttonOperator = document.createElement('button');
+        buttonOperator.textContent = element;
+        containerButtons.appendChild(buttonOperator);    
+    }
+
+    for (const element of optionFunctions) {
+        const buttonOptional = document.createElement('button');
+        buttonOptional.textContent = element;
+        containerButtons.appendChild(buttonOptional);
+    }
 }
