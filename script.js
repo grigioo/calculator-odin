@@ -1,9 +1,18 @@
-const containerButtons = document.querySelector('.container-buttons');
 const output = document.querySelector('.output');
+const buttonsNumbers = [...document.querySelectorAll('.btn-number')];
+const buttonOperations = [...document.querySelectorAll('.btn-operation')];
+const buttonErase = document.querySelector('.btn-erase');
+const buttonBrackets = document.querySelector('.btn-brackets');
+const buttonFloat = document.querySelector('.btn-float');
+const buttonBack = document.querySelector('btn-back');
+const buttonEquals = document.querySelector('btn-equals');
+const symbols = ['AC','()','%','÷','7','8','9','×','4','5','6','-','1','2','3','+','0','.','<','='];
 
 const numbers = {
     numberOne: 0,
     numberTwo: 0,
+    numberResult: 0,
+    operator: '',
 }
 
 function add(numberOne, numberTwo) {
@@ -11,8 +20,6 @@ function add(numberOne, numberTwo) {
 }
 
 function divide(numberOne, numberTwo) {
-    console.log(numberOne);
-    console.log(numberTwo);
     return numberOne / numberTwo;
 }
 
@@ -39,35 +46,9 @@ function operate(numberOne, operator, numberTwo) {
     }
 }
 
-let buttons = document.querySelectorAll('button');
-let numbersArray = [];
-let operationsArray = [];
-let number = '';
-let operator = '';
-let outputText = '';
-let resultOperation = 0;
-
-buttons = [...buttons];
-
-buttons.forEach(button => {
-    button.addEventListener('click', event => {
-        if(Number(event.target.textContent))
-            number += event.target.textContent;
-        else if(!Number(event.target.textContent)) {
-            numbersArray.push(Number(number));
-            operator = event.target.textContent;
-            operationsArray.push(operator);
-            number = '';           
-        }
-        if(numbersArray.length === 2) {
-            numbersArray[0] = operate(numbersArray[0], operationsArray[0], numbersArray[1]);
-            operationsArray.shift();
-            resultOperation = numbersArray[0];
-            outputText = resultOperation;
-            numbersArray.pop();
-        }
-        if(event.target.textContent !== '=')
-            outputText += event.target.textContent;
-        output.textContent = outputText;
-    });
-});
+function isNumber(item) {
+    if (item == 0) {
+        return true;
+    }
+    return Boolean(Number(item));
+}
