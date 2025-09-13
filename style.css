@@ -39,13 +39,21 @@ button:hover {
     margin-top: 4rem;
 }
 
-.output {
+.full-output {
     display: flex;
     justify-content: flex-end;
     align-items: center;
     height: 6rem;
     font-size: 4rem;
     padding: 0 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+.output {
+    font-size: 4rem;
 }
 
 .cursor {
@@ -54,9 +62,9 @@ button:hover {
 }
 
 @keyframes blink-animation {
-  0% { opacity: 0; }
-  50% { opacity: 1; }
-  100% { opacity: 0; }
+    0% { opacity: 0; }
+    50% { opacity: 1; }
+    100% { opacity: 0; }
 }
 
 .container-buttons {
@@ -64,6 +72,17 @@ button:hover {
     flex-wrap: wrap;
     gap: 4px;
     justify-content: center;
+}
+
+.first-row {
+    display: flex;
+    gap: 4px;
+    flex-basis: 100%;
+}
+
+.first-row > :first-child {
+    flex-grow: 1;
+    border-radius: 64px;
 }
 
 .btn-equals {

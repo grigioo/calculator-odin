@@ -8,107 +8,123 @@ const buttonFloat = document.querySelector('.btn-float');
 const buttonBack = document.querySelector('.btn-back');
 const buttonEquals = document.querySelector('.btn-equals');
 
-let outputSymbols = [];
-let numbersArray = [];
-let numberResult = '';
-let symbol = '';
-let operator = '';
+let operationInformation = {
+    operator: '',
+    numberResult: '',
+    symbol: '',
+    outputSymbols: [],
+    numbersArray: [],
+}
 
+// Handle every number click to write data about pressed one in 'symbol'
 buttonsNumbers.forEach(button => {
     button.addEventListener('click', event => {
-        if (operator === '=') {
+        // Check is operator - '=' to change writing for thi situation
+        if (operationInformation.operator === '=') {
             updateOutput('AC');
-            operator = '';
+            operationInformation.operator = '';
         }
-        symbol = event.target.textContent;
-        updateOutput(symbol);
-        displayOutput(outputSymbols);
+        // Updating output
+        operationInformation.symbol = event.target.textContent;
+        updateOutput(operationInformation.symbol);
+        displayOutput(operationInformation.outputSymbols);
     });
 });
 
+// Handle every operation click
 buttonsOperations.forEach(button => {
     button.addEventListener('click', event => {
-        symbol = event.target.textContent;
-        if (operator !== '') {
-            numbersArray = outputSymbols.join('').split(operator);
-            numberResult = operate(numbersArray[0], operator, numbersArray[1]);
-            numbersArray[0] = numberResult;
+        // Situation without any numbers in output
+        if (operationInformation.outputSymbols.length === 0)
+            updateOutput(0);
+        operationInformation.symbol = event.target.textContent;
+        if (operationInformation.operator !== '') {
+            // Store numbers from output to operate
+            operationInformation.numbersArray = operationInformation.outputSymbols.join('').split(operationInformation.operator);
+            operationInformation.numberResult = operate(operationInformation.numbersArray[0], operationInformation.operator, operationInformation.numbersArray[1]);
 
-            operator = symbol;
-            if (operator === '=') {
-                symbol = String(numberResult).split('');
+            operationInformation.operator = operationInformation.symbol;
+            
+            // Display result with fixed length and storing it as array for checking in 'updateOutput'
+            if (operationInformation.operator === '=') {
+                operationInformation.symbol = String(checkLength(operationInformation.numberResult)).split('');
             }
             else {
-                symbol = (String(numberResult) + operator).split('');
-                console.log(typeof(symbol));
+                operationInformation.symbol = String(checkLength(operationInformation.numberResult) + operationInformation.operator).split('');
             }
+            
             updateOutput('AC');
         }
         else {
-            operator = symbol;
+            // Defining operator for the first iteration
+            operationInformation.operator = operationInformation.symbol;
         }
-        updateOutput(symbol);
-        displayOutput(outputSymbols);
-        console.log(numbersArray);
-        console.log(operator);
+        updateOutput(operationInformation.symbol);
+        displayOutput(operationInformation.outputSymbols);
     });
 });
 
+// Handler for dot operation. Checks if dot alone in array
 buttonFloat.addEventListener('click', event => {
-    if (outputSymbols[outputSymbols.length - 1] !== '.') {
-        symbol = event.target.textContent;
-        updateOutput(symbol);
-        displayOutput(outputSymbols);
+    if (operationInformation.outputSymbols[operationInformation.outputSymbols.length - 1] !== '.') {
+        operationInformation.symbol = event.target.textContent;
+        updateOutput(operationInformation.symbol);
+        displayOutput(operationInformation.outputSymbols);
     }
 });
 
+// Handler for erasing. Reset all variables and output information
 buttonErase.addEventListener('click', () => {
-    numbersArray = [];
-    numberResult = '';
-    symbol = '';
-    operator = '';
+    operationInformation.numbersArray = [];
+    operationInformation.numberResult = '';
+    operationInformation.symbol = '';
+    operationInformation.operator = '';
     updateOutput('AC');
-    displayOutput(outputSymbols);
+    displayOutput(operationInformation.outputSymbols);
 });
 
+// Handler for erasing last symbol
 buttonBack.addEventListener('click', () => {
     updateOutput('B');
-    displayOutput(outputSymbols);
+    displayOutput(operationInformation.outputSymbols);
 });
 
-// buttonBrackets.addEventListener('click', event => {
-//     updateOutput(symbol);
-//     displayOutput(outputSymbols);
-// });
-
+// Check symbol value to option for every key
 function updateOutput(symbol) {
     if (typeof(symbol) === 'object') {
-        outputSymbols = symbol;
+        operationInformation.outputSymbols = symbol;
     }
     else {
         if (symbol === 'AC') {
-            outputSymbols = [];
+            operationInformation.outputSymbols = [];
         }
         else if (symbol !== 'B') {
-            outputSymbols.push(symbol);
+            operationInformation.outputSymbols.push(symbol);
         }
         else {
-            outputSymbols.pop(symbol);
+            operationInformation.outputSymbols.pop(symbol);
         }
     }
 }
 
+// Add new information in output with cursor
 function displayOutput() {
-    output.textContent = outputSymbols.join('');
-    if (outputSymbols.length === 0) {
+    output.textContent = operationInformation.outputSymbols.join('');
+    if (operationInformation.outputSymbols.length === 0) {
         output.appendChild(cursor);
     }
 }
 
-function name(params) {
-    
+// Formate result for correct output with big numbers
+function checkLength(number) {
+    let length = String(number).split('').length;
+    if (length > 10) {
+        return (number / Math.pow(10, length)).toFixed(2) + 'E' + length;
+    }
+    return number;
 }
 
+// Math functions
 function add(numberOne, numberTwo) {
     return numberOne + numberTwo;
 }
@@ -129,6 +145,7 @@ function remained(numberOne, numberTwo) {
     return numberOne % numberTwo;
 }
 
+// Function to call math functions
 function operate(numberOne, operator, numberTwo) {
     numberOne = Number(numberOne);
     numberTwo = Number(numberTwo);
