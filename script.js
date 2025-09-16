@@ -19,7 +19,7 @@ let operationInformation = {
 // Handle every number click to write data about pressed one in 'symbol'
 buttonsNumbers.forEach(button => {
     button.addEventListener('click', event => {
-        // Check is operator - '=' to change writing for thi situation
+        // Check is operator - '=' to change writing for this situation
         if (operationInformation.operator === '=') {
             updateOutput('AC');
             operationInformation.operator = '';
